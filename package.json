@@ -1,0 +1,11 @@
+{
+  "name": "kotonilo",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r build",
+    "build:backend": "pnpm --filter kotonilo-backend build",
+    "build:frontend": "pnpm --filter kotonilo-frontend build",
+    "start": "pnpm --filter kotonilo-backend start"
+  }
+}
