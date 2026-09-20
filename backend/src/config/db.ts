@@ -1,0 +1,12 @@
+﻿import mongoose from 'mongoose';
+import { env } from './env.js';
+
+export async function connectDB(): Promise<void> {
+  try {
+    const conn = await mongoose.connect(env.MONGODB_URI);
+    console.log(`[Database] MongoDB connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.error('[Database] MongoDB connection error:', error);
+    process.exit(1);
+  }
+}
