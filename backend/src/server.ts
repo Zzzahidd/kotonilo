@@ -10,9 +10,10 @@ async function bootstrap() {
     {
       fetch: app.fetch,
       port: env.PORT,
+      hostname: '0.0.0.0',
     },
     (info) => {
-      console.log(`[Server] Koto Nilo API Server running on http://localhost:${info.port}`);
+      console.log(`[Server] Koto Nilo API Server running on port ${info.port}`);
     }
   );
 }

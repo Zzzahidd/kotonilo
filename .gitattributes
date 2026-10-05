@@ -1,0 +1,12 @@
+# GitHub Linguist language detection overrides
+# Exclude agent toolings, internal assistant scripts and skill files from language statistics
+.agents/** linguist-vendored
+.agents/** linguist-detectable=false
+
+# Exclude python scripts from language calculation
+*.py linguist-detectable=false
+*.py linguist-vendored
+
+# Ensure TypeScript is tracked as the primary project language
+*.ts linguist-detectable=true
+*.tsx linguist-detectable=true
