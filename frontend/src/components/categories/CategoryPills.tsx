@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { useLanguageStore } from '../../context/languageStore';
 import { TranslationKey } from '../../i18n/translations';
+import { navigate } from '../../utils/navigation';
 
 interface CategoryPillsProps {
   selectedCategory: string;
@@ -59,7 +60,11 @@ export const CategoryPills: React.FC<CategoryPillsProps> = ({
           </div>
           <a
             href="/categories"
-            className="inline-flex items-center gap-1 text-xs sm:text-sm font-medium text-[#191923] hover:text-[#55555C] transition-colors group self-start sm:self-auto"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/categories');
+            }}
+            className="inline-flex items-center gap-1 text-xs sm:text-sm font-medium text-[#191923] hover:text-[#55555C] transition-colors group self-start sm:self-auto cursor-pointer"
           >
             {t('viewAllCategories')}
             <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />

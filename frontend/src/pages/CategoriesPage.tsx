@@ -14,6 +14,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { useLanguageStore } from '../context/languageStore';
+import { navigate } from '../utils/navigation';
 
 export const CategoriesPage: React.FC = () => {
   const { t, language } = useLanguageStore();
@@ -111,10 +112,10 @@ export const CategoriesPage: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
         {ALL_CATEGORIES.map((cat) => (
-          <a
+          <div
             key={cat.slug}
-            href={`/search?cat=${cat.slug}`}
-            className="bg-white rounded-3xl border border-[#E3E2E3] p-6 shadow-card hover:border-[#191923] hover:shadow-float transition-all duration-200 flex flex-col justify-between group"
+            onClick={() => navigate(`/search?cat=${cat.slug}`)}
+            className="bg-white rounded-3xl border border-[#E3E2E3] p-6 shadow-card hover:border-[#191923] hover:shadow-float transition-all duration-200 flex flex-col justify-between group cursor-pointer"
           >
             <div>
               <div className="w-12 h-12 rounded-2xl bg-[#F5F3F5] text-[#191923] flex items-center justify-center mb-4 group-hover:bg-[#191923] group-hover:text-white transition-colors">
@@ -132,16 +133,21 @@ export const CategoriesPage: React.FC = () => {
               <span className="text-[11px] text-[#848389] block mb-1.5">{t('popularSearches')}</span>
               <div className="flex flex-wrap gap-1.5">
                 {cat.exampleQueries.map((q, idx) => (
-                  <span
+                  <button
                     key={idx}
-                    className="px-2 py-0.5 bg-[#FAFAF8] text-[#55555C] text-[10px] rounded-md border border-[#E3E2E3]/60"
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      navigate(`/search?q=${encodeURIComponent(q)}&cat=${cat.slug}`);
+                    }}
+                    className="px-2 py-0.5 bg-[#FAFAF8] hover:bg-[#191923] hover:text-white text-[#55555C] text-[10px] rounded-md border border-[#E3E2E3]/60 transition-colors cursor-pointer"
                   >
                     {q}
-                  </span>
+                  </button>
                 ))}
               </div>
             </div>
-          </a>
+          </div>
         ))}
       </div>
     </div>

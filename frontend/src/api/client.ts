@@ -8,7 +8,7 @@ import {
   SessionInfo,
 } from '../types';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'https://kotoniloo.onrender.com/api';
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,

@@ -8,6 +8,7 @@ import { AddPriceModal } from '../components/post-wizard/AddPriceModal';
 import { pricesApi } from '../api/client';
 import { PriceReport } from '../types';
 import { useAuthStore } from '../context/authStore';
+import { navigate } from '../utils/navigation';
 
 export const HomePage: React.FC = () => {
   const { isAuthenticated, openAuthModal } = useAuthStore();
@@ -46,9 +47,17 @@ export const HomePage: React.FC = () => {
 
   const handleSearchSubmit = () => {
     if (searchQuery.trim()) {
-      window.location.href = `/search?q=${encodeURIComponent(searchQuery)}&loc=${encodeURIComponent(selectedLocation)}`;
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}&loc=${encodeURIComponent(selectedLocation)}`);
     } else {
-      fetchReports();
+      navigate('/search');
+    }
+  };
+
+  const handleCategorySelect = (catSlug: string) => {
+    if (catSlug === selectedCategory) {
+      setSelectedCategory('all');
+    } else {
+      setSelectedCategory(catSlug);
     }
   };
 
@@ -97,14 +106,14 @@ export const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="w-full pb-16">
+    <div className="w-full pb-16 animate-in fade-in duration-200">
       {/* Hero with exact Dhaka skyline background & watermark badges */}
       <HeroSection onOpenAddModal={() => setAddModalOpen(true)} />
 
       {/* Popular Categories */}
       <CategoryPills
         selectedCategory={selectedCategory}
-        onSelectCategory={(cat) => setSelectedCategory(cat)}
+        onSelectCategory={handleCategorySelect}
       />
 
       {/* Search & Location Bar */}

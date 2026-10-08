@@ -10,6 +10,7 @@ import { MyReportsPage } from './pages/MyReportsPage';
 import { AuthModal } from './components/auth/AuthModal';
 import { AddPriceModal } from './components/post-wizard/AddPriceModal';
 import { useAuthStore } from './context/authStore';
+import { navigate } from './utils/navigation';
 
 const queryClient = new QueryClient();
 
@@ -27,18 +28,44 @@ export function App() {
     const handlePopState = () => {
       setCurrentPath(window.location.pathname);
     };
+
+    // Global click listener to intercept internal link clicks
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest('a');
+      if (
+        target &&
+        target.href &&
+        target.origin === window.location.origin &&
+        !target.hasAttribute('download') &&
+        target.target !== '_blank' &&
+        !e.ctrlKey &&
+        !e.metaKey &&
+        !e.shiftKey &&
+        !e.altKey
+      ) {
+        const path = target.pathname + target.search;
+        e.preventDefault();
+        navigate(path);
+      }
+    };
+
     window.addEventListener('popstate', handlePopState);
-    return () => window.removeEventListener('popstate', handlePopState);
+    document.addEventListener('click', handleGlobalClick);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+      document.removeEventListener('click', handleGlobalClick);
+    };
   }, []);
 
   const renderPage = () => {
-    if (currentPath === '/search') {
+    if (currentPath.startsWith('/search')) {
       return <SearchResultPage />;
     }
-    if (currentPath === '/categories') {
+    if (currentPath.startsWith('/categories')) {
       return <CategoriesPage />;
     }
-    if (currentPath === '/my-reports') {
+    if (currentPath.startsWith('/my-reports')) {
       return <MyReportsPage />;
     }
     return <HomePage />;
@@ -52,7 +79,7 @@ export function App() {
           <Navbar
             onOpenAddModal={() => setAddModalOpen(true)}
             onOpenSearchModal={() => {
-              window.location.href = '/search';
+              navigate('/search');
             }}
           />
 
@@ -66,7 +93,10 @@ export function App() {
           <AddPriceModal
             isOpen={addModalOpen}
             onClose={() => setAddModalOpen(false)}
-            onSuccess={() => window.location.reload()}
+            onSuccess={() => {
+              // Refresh query cache and stay on current page seamlessly
+              queryClient.invalidateQueries();
+            }}
           />
 
           {/* Footer */}

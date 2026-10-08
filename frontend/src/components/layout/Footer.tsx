@@ -1,16 +1,9 @@
 import React from 'react';
 import { useLanguageStore } from '../../context/languageStore';
+import { navigate } from '../../utils/navigation';
 
 export const Footer: React.FC = () => {
   const { t } = useLanguageStore();
-
-  const navigate = (path: string) => {
-    if (window.location.pathname !== path) {
-      window.history.pushState({}, '', path);
-      window.dispatchEvent(new PopStateEvent('popstate'));
-    }
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
 
   return (
     <footer className="w-full bg-white border-t border-[#E3E2E3] py-4 sm:py-5 mt-auto">

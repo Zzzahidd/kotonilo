@@ -37,7 +37,7 @@ export const AddPriceModal: React.FC<AddPriceModalProps> = ({
   onClose,
   onSuccess,
 }) => {
-  const { user, isAuthenticated, createAnonymous } = useAuthStore();
+  const { user, isAuthenticated, createAnonymous, ensureAnonymousAuth } = useAuthStore();
   const { t, language } = useLanguageStore();
 
   const CATEGORY_OPTIONS = [
@@ -126,6 +126,11 @@ export const AddPriceModal: React.FC<AddPriceModalProps> = ({
     setError('');
 
     try {
+      if (!isAuthenticated) {
+        await ensureAnonymousAuth();
+      }
+
+      const currentUser = useAuthStore.getState().user;
       const payload = {
         itemTitle,
         categorySlug,
@@ -147,7 +152,7 @@ export const AddPriceModal: React.FC<AddPriceModalProps> = ({
           notes: notes || undefined,
         },
         imageUrl: imageUrl || imagePreview || '',
-        isAnonymous: user?.isAnonymous ?? true,
+        isAnonymous: currentUser?.isAnonymous ?? true,
       };
 
       const res = await pricesApi.createReport(payload);

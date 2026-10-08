@@ -18,6 +18,7 @@ interface AuthState {
   login: (data: { usernameOrEmail: string; password: string }) => Promise<boolean>;
   register: (data: { username: string; displayName: string; email?: string; password: string }) => Promise<boolean>;
   createAnonymous: () => Promise<boolean>;
+  ensureAnonymousAuth: () => Promise<boolean>;
   googleLogin: (credential: string) => Promise<boolean>;
   logout: () => Promise<void>;
   logoutAll: () => Promise<void>;
@@ -111,6 +112,30 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       return false;
     } catch (err: any) {
       throw err;
+    }
+  },
+
+  ensureAnonymousAuth: async () => {
+    const token = localStorage.getItem('kotonilo_access_token');
+    if (token && get().isAuthenticated) {
+      return true;
+    }
+    try {
+      const res = await authApi.createAnonymous();
+      if (res.success && res.data) {
+        localStorage.setItem('kotonilo_access_token', res.data.accessToken);
+        localStorage.setItem('kotonilo_refresh_token', res.data.refreshToken);
+        set({
+          user: res.data.user,
+          isAuthenticated: true,
+          generatedCredentials: res.data.credentials || null,
+        });
+        return true;
+      }
+      return false;
+    } catch (err: any) {
+      console.error('Auto anonymous error:', err);
+      return false;
     }
   },
 

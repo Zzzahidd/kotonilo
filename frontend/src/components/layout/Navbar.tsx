@@ -4,6 +4,7 @@ import { useAuthStore } from '../../context/authStore';
 import { useLanguageStore } from '../../context/languageStore';
 import { LanguageSwitcher } from '../ui/LanguageSwitcher';
 import { Button } from '../ui/Button';
+import { navigate as appNavigate } from '../../utils/navigation';
 
 interface NavbarProps {
   onOpenAddModal: () => void;
@@ -27,13 +28,9 @@ export const Navbar: React.FC<NavbarProps> = ({ onOpenAddModal, onOpenSearchModa
   }, []);
 
   const navigate = (path: string) => {
-    if (window.location.pathname !== path) {
-      window.history.pushState({}, '', path);
-      window.dispatchEvent(new PopStateEvent('popstate'));
-    }
     setMobileMenuOpen(false);
     setUserDropdownOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    appNavigate(path);
   };
 
   const isHomeActive = currentPath === '/';
